@@ -1,0 +1,1 @@
+enum SiteEnum { baseWebsite, ukWebsite }
