@@ -6,8 +6,8 @@ import 'package:search_results/enums/site_enum.dart';
 import 'package:search_results/models/search_result.dart';
 
 class Scraper {
-  final String _adSelector = 'vdQmEd';
-  final String _organicSelector = 'N54PNb';
+  final String _adSelector = '.vdQmEd';
+  final String _organicSelector = '.N54PNb';
   final List<SearchResult> searchResults = [];
   final String searchTerm;
   final SiteEnum site;
@@ -43,7 +43,7 @@ class Scraper {
 
     try {
       executablePath = Directory(localPath)
-          .listSync()
+          .listSync(recursive: true, followLinks: false)
           .firstWhere((file) => file.path.endsWith('chrome.exe'));
     } catch (e) {
       //
@@ -78,15 +78,86 @@ class Scraper {
     await _browser.close();
   }
 
+  Future<int> checkResults() async {
+    var organicResults = await _page.$$(_organicSelector);
+    var adResults = await _page.$$(_adSelector);
+
+    return organicResults.length + adResults.length;
+  }
+
+  Future<String> getTextContent(
+      ElementHandle elementHandle, String selector) async {
+    var element = await elementHandle.$(selector);
+    return await element.evaluate('element => element.textContent');
+  }
+
+  Future<void> extractResultInfo(
+      List<ElementHandle> organicResults, List<ElementHandle> adResults) async {
+    for (var adResult in adResults) {
+      String websiteName = await getTextContent(adResult, '.TElO2c>span');
+      var linkElement = await adResult.$('a.sVXRqc');
+      var href = await linkElement.property('href');
+      String fullURL = href.toString().split('JSHandle:')[1];
+      String headlineText = await getTextContent(adResult, '.EE3Upf>span');
+      String subText = await getTextContent(adResult, '.lVm3ye>div');
+      searchResults.add(
+        SearchResult(
+          searchTerm: searchTerm,
+          dateTime: DateTime.now(),
+          isSponsored: true,
+          website: websiteName,
+          destinationURL: fullURL,
+          headlineText: headlineText,
+          subText: subText,
+        ),
+      );
+    }
+
+    for (var organicResult in organicResults) {
+      String websiteName = await getTextContent(organicResult, '.CA5RN>span');
+      var linkElement = await organicResult.$('.yuRUbf>div>span>a');
+      var href = await linkElement.property('href');
+      String fullURL = href.toString().split('JSHandle:')[1];
+      String headlineText = await getTextContent(organicResult, '.DKV0Md');
+      String subText = await getTextContent(organicResult, '.Hdw6tb>span');
+      searchResults.add(
+        SearchResult(
+          searchTerm: searchTerm,
+          dateTime: DateTime.now(),
+          isSponsored: false,
+          website: websiteName,
+          destinationURL: fullURL,
+          headlineText: headlineText,
+          subText: subText,
+        ),
+      );
+    }
+  }
+
   Future<void> getData() async {
     store.dispatch(SetInfoMessageAction(infoMessage: 'Preparing browser...'));
     await launchBrowser();
-    var title = await _page.title;
-    print(title);
+    if (store.state.errorMessage == '') {
+      String siteVersionMessage =
+          'Scraping from https://www.google.co${site == SiteEnum.baseWebsite ? "m" : ".uk"}/';
+      store.dispatch(SetInfoMessageAction(infoMessage: siteVersionMessage));
+    }
     // TODO: finish logic
+    // click pop up
+    var infoPopup = await _page.$$('.sy4vM');
+    await infoPopup[0].click();
+    // Check if there are 50 or more results on the page
+    int totalResults = await checkResults();
+    while (totalResults < 50) {
+      await _page.evaluate(
+          '''() => { window.scrollTo(0, document.body.scrollHeight); }''');
+      totalResults = await checkResults();
+    }
+    var organicResults = await _page.$$(_organicSelector);
+    var adResults = await _page.$$(_adSelector);
+    await extractResultInfo(organicResults, adResults);
+    //
     await closeBrowser();
-    store.dispatch(SetInfoMessageAction(
-        infoMessage: 'Info downloaded to /path/to/file.csv'));
     store.dispatch(SetInfoMessageAction(infoMessage: ''));
   }
 }
