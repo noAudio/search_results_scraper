@@ -64,6 +64,8 @@ class Home extends fl.StatelessWidget {
                   onPressed: state.isSearching
                       ? null
                       : () {
+                          store.dispatch(
+                              SetErrorMessageAction(errorMessage: ''));
                           if (state.searchTerm == '') {
                             store.dispatch(SetErrorMessageAction(
                                 errorMessage:
@@ -71,7 +73,8 @@ class Home extends fl.StatelessWidget {
                           } else {
                             store.dispatch(
                                 SetSearchStateAction(isSearching: true));
-                            print(state.searchTerm);
+                            store.dispatch(SetInfoMessageAction(
+                                infoMessage: 'Preparing browser...'));
                           }
                         },
                   child: fl.Text(
@@ -92,14 +95,17 @@ class Home extends fl.StatelessWidget {
                           height: 25,
                           child: fl.ProgressRing(),
                         ),
-                        fl.Text(state.infoMessage),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5.0),
+                          child: fl.Text(state.infoMessage),
+                        ),
                       ],
                     ),
                   ),
             state.errorMessage == ''
                 ? const fl.SizedBox()
                 : fl.Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.fromLTRB(0, 8.0, 0, 8.0),
                     child: fl.Text(
                       state.errorMessage,
                       style: TextStyle(color: fl.Colors.red),
