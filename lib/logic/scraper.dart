@@ -142,7 +142,6 @@ class Scraper {
           'Scraping from https://www.google.co${site == SiteEnum.baseWebsite ? "m" : ".uk"}/';
       store.dispatch(SetInfoMessageAction(infoMessage: siteVersionMessage));
     }
-    // TODO: finish logic
     // click pop up
     var infoPopup = await _page.$$('.sy4vM');
     await infoPopup[0].click();
