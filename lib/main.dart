@@ -3,6 +3,8 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:fluent_ui/fluent_ui.dart' as fl;
 import 'package:search_results/actions/index.dart';
+import 'package:search_results/enums/site_enum.dart';
+import 'package:search_results/logic/scraper.dart';
 import 'package:search_results/models/app_state.dart';
 import 'package:search_results/reducers/app_reducer.dart';
 
@@ -63,7 +65,7 @@ class Home extends fl.StatelessWidget {
                 fl.Button(
                   onPressed: state.isSearching
                       ? null
-                      : () {
+                      : () async {
                           store.dispatch(
                               SetErrorMessageAction(errorMessage: ''));
                           if (state.searchTerm == '') {
@@ -73,8 +75,11 @@ class Home extends fl.StatelessWidget {
                           } else {
                             store.dispatch(
                                 SetSearchStateAction(isSearching: true));
-                            store.dispatch(SetInfoMessageAction(
-                                infoMessage: 'Preparing browser...'));
+                            var scraper = Scraper(
+                                searchTerm: state.searchTerm,
+                                site: SiteEnum.baseWebsite,
+                                store: store);
+                            await scraper.getData();
                           }
                         },
                   child: fl.Text(
