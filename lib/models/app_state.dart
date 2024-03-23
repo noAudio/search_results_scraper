@@ -6,11 +6,13 @@ class AppState {
   final String searchTerm;
   final SiteEnum site;
   final String infoMessage;
+  final String errorMessage;
   final bool isSearching;
   AppState({
     required this.searchTerm,
     required this.site,
     required this.infoMessage,
+    required this.errorMessage,
     required this.isSearching,
   });
 
@@ -18,6 +20,7 @@ class AppState {
         searchTerm: '',
         site: SiteEnum.baseWebsite,
         infoMessage: '',
+        errorMessage: '',
         isSearching: false,
       );
 
@@ -25,12 +28,14 @@ class AppState {
     String? searchTerm,
     SiteEnum? site,
     String? infoMessage,
+    String? errorMessage,
     bool? isSearching,
   }) {
     return AppState(
       searchTerm: searchTerm ?? this.searchTerm,
       site: site ?? this.site,
       infoMessage: infoMessage ?? this.infoMessage,
+      errorMessage: errorMessage ?? this.errorMessage,
       isSearching: isSearching ?? this.isSearching,
     );
   }
@@ -40,6 +45,7 @@ class AppState {
       'searchTerm': searchTerm,
       'site': site,
       'infoMessage': infoMessage,
+      'errorMessage': errorMessage,
       'isSearching': isSearching,
     };
   }
@@ -49,6 +55,7 @@ class AppState {
       searchTerm: map['searchTerm'] ?? '',
       site: map['site'] ?? SiteEnum.baseWebsite,
       infoMessage: map['infoMessage'] ?? '',
+      errorMessage: map['errorMessage'] ?? '',
       isSearching: map['isSearching'] ?? false,
     );
   }
@@ -60,7 +67,7 @@ class AppState {
 
   @override
   String toString() {
-    return 'AppState(searchTerm: $searchTerm, site: $site, infoMessage: $infoMessage, isSearching: $isSearching)';
+    return 'AppState(searchTerm: $searchTerm, site: $site, infoMessage: $infoMessage, errorMessage: $errorMessage, isSearching: $isSearching)';
   }
 
   @override
