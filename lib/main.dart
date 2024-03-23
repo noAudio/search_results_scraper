@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:fluent_ui/fluent_ui.dart' as fl;
@@ -63,10 +64,15 @@ class Home extends fl.StatelessWidget {
                   onPressed: state.isSearching
                       ? null
                       : () {
-                          if (state.searchTerm == '') {}
-                          store.dispatch(
-                              SetSearchStateAction(isSearching: true));
-                          print(state.searchTerm);
+                          if (state.searchTerm == '') {
+                            store.dispatch(SetErrorMessageAction(
+                                errorMessage:
+                                    'Please type in a keyword to search.'));
+                          } else {
+                            store.dispatch(
+                                SetSearchStateAction(isSearching: true));
+                            print(state.searchTerm);
+                          }
                         },
                   child: fl.Text(
                     state.isSearching ? 'Searching...' : 'Search',
@@ -88,6 +94,15 @@ class Home extends fl.StatelessWidget {
                         ),
                         fl.Text(state.infoMessage),
                       ],
+                    ),
+                  ),
+            state.errorMessage == ''
+                ? const fl.SizedBox()
+                : fl.Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: fl.Text(
+                      state.errorMessage,
+                      style: TextStyle(color: fl.Colors.red),
                     ),
                   ),
           ],

@@ -10,6 +10,8 @@ AppState appReducer(AppState state, dynamic action) {
     return state.copyWith(searchTerm: action.searchTerm);
   } else if (action is SetSiteAction) {
     return state.copyWith(site: action.site);
+  } else if (action is SetErrorMessageAction) {
+    return state.copyWith(errorMessage: action.errorMessage);
   }
 
   return state;
