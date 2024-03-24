@@ -14,16 +14,18 @@ class CSVGenerator {
     file.writeAsStringSync(
         'Keyword, Date, Sponsored, Website Name, URL, Headline Text, Sub-text\n');
 
+    int listIndex = 0;
+
     for (var result in results) {
-      if (results.indexOf(result) == 50) {
-        // break when we get 50 results
-        break;
-      }
+      // break when we get 50 results
+      if (listIndex == 50) break;
       // TODO: Format date
       file.writeAsStringSync(
         '${result.searchTerm}, ${result.dateTime}, ${result.isSponsored ? "Yes" : "No"}, ${result.website}, ${result.destinationURL}, "${result.headlineText}", ${result.subText}\n',
         mode: FileMode.append,
       );
+
+      listIndex++;
     }
   }
 }
