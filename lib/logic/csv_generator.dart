@@ -1,17 +1,24 @@
 import 'dart:io';
 
 import 'package:intl/intl.dart';
+import 'package:search_results/enums/site_enum.dart';
 import 'package:search_results/models/search_result.dart';
 
 class CSVGenerator {
   final String fileName;
   final List<SearchResult> results;
+  final SiteEnum site;
 
-  CSVGenerator({required this.fileName, required this.results});
+  CSVGenerator({
+    required this.fileName,
+    required this.results,
+    required this.site,
+  });
 
   void generate() {
     // TODO: Save to Documents directory
-    var file = File('$fileName.csv');
+    var file = File(
+        '${results[0].searchTerm} - $fileName - ${site == SiteEnum.baseWebsite ? "Google" : "Google UK"}.csv');
     file.writeAsStringSync(
         'Keyword, Date, Sponsored, Website Name, URL, Headline Text, Sub-text\n');
 
