@@ -75,11 +75,16 @@ class Home extends fl.StatelessWidget {
                           } else {
                             store.dispatch(
                                 SetSearchStateAction(isSearching: true));
-                            var scraper = Scraper(
-                                searchTerm: state.searchTerm,
-                                site: SiteEnum.baseWebsite,
-                                store: store);
-                            await scraper.getData();
+                            for (var site in SiteEnum.values) {
+                              var scraper = Scraper(
+                                  searchTerm: state.searchTerm,
+                                  site: site,
+                                  store: store);
+                              await scraper.getData();
+                              // TODO: Generate csv
+                            }
+                            store.dispatch(
+                                SetSearchStateAction(isSearching: false));
                           }
                         },
                   child: fl.Text(
@@ -110,7 +115,7 @@ class Home extends fl.StatelessWidget {
             state.errorMessage == ''
                 ? const fl.SizedBox()
                 : fl.Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 8.0, 0, 8.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: fl.Text(
                       state.errorMessage,
                       style: TextStyle(color: fl.Colors.red),
