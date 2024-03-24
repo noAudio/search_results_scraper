@@ -1,4 +1,3 @@
-import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart';
 import 'package:redux/redux.dart';
@@ -46,100 +45,104 @@ class Home extends fl.StatelessWidget {
       builder: (context, store) {
         AppState state = store.state;
 
-        return fl.Column(
-          children: [
-            fl.Row(
-              children: [
-                fl.Padding(
-                  padding: const fl.EdgeInsets.all(8.0),
-                  child: fl.SizedBox(
-                    width: 250,
-                    child: fl.TextBox(
-                      autofocus: true,
-                      placeholder: 'Enter search term',
-                      enabled: !state.isSearching,
-                      onChanged: (value) {
-                        store.dispatch(SetSearchTermAction(searchTerm: value));
-                      },
-                    ),
-                  ),
-                ),
-                fl.Button(
-                  onPressed: state.isSearching
-                      ? null
-                      : () async {
-                          store.dispatch(
-                              SetErrorMessageAction(errorMessage: ''));
-                          if (state.searchTerm == '') {
-                            store.dispatch(SetErrorMessageAction(
-                                errorMessage:
-                                    'Please type in a keyword to search.'));
-                          } else {
-                            store.dispatch(
-                                SetSearchStateAction(isSearching: true));
-                            for (var site in SiteEnum.values) {
-                              var scraper = Scraper(
-                                  searchTerm: state.searchTerm,
-                                  site: site,
-                                  store: store);
-                              await scraper.getData();
-
-                              String fileName = DateFormat.yMd()
-                                  .add_jm()
-                                  .format(DateTime.now());
-                              store.dispatch(SetInfoMessageAction(
-                                  infoMessage: 'Generating csv file...'));
-                              var csvGenerator = CSVGenerator(
-                                fileName: fileName,
-                                results: scraper.searchResults,
-                                site: site,
-                              );
-                              await csvGenerator.generate();
-
-                              store.dispatch(SetInfoMessageAction(
-                                  infoMessage:
-                                      'File(s) saved to Documents/Google Search Results/'));
-                            }
-                          }
-                          store.dispatch(
-                              SetSearchStateAction(isSearching: false));
-                          store.dispatch(SetInfoMessageAction(infoMessage: ''));
-                        },
-                  child: fl.Text(
-                    state.isSearching ? 'Searching...' : 'Search',
-                  ),
-                ),
-              ],
-            ),
-            const fl.SizedBox(),
-            state.infoMessage == ''
-                ? const fl.SizedBox()
-                : fl.Padding(
+        return fl.Center(
+          child: fl.Column(
+            children: [
+              fl.Row(
+                children: [
+                  fl.Padding(
                     padding: const fl.EdgeInsets.all(8.0),
-                    child: fl.Row(
-                      children: [
-                        const fl.SizedBox(
-                          width: 25,
-                          height: 25,
-                          child: fl.ProgressRing(),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 5.0),
-                          child: fl.Text(state.infoMessage),
-                        ),
-                      ],
+                    child: fl.SizedBox(
+                      width: 250,
+                      child: fl.TextBox(
+                        autofocus: true,
+                        placeholder: 'Enter search term',
+                        enabled: !state.isSearching,
+                        onChanged: (value) {
+                          store
+                              .dispatch(SetSearchTermAction(searchTerm: value));
+                        },
+                      ),
                     ),
                   ),
-            state.errorMessage == ''
-                ? const fl.SizedBox()
-                : fl.Padding(
-                    padding: const EdgeInsets.all(8.0),
+                  fl.Button(
+                    onPressed: state.isSearching
+                        ? null
+                        : () async {
+                            store.dispatch(
+                                SetErrorMessageAction(errorMessage: ''));
+                            if (state.searchTerm == '') {
+                              store.dispatch(SetErrorMessageAction(
+                                  errorMessage:
+                                      'Please type in a keyword to search.'));
+                            } else {
+                              store.dispatch(
+                                  SetSearchStateAction(isSearching: true));
+                              for (var site in SiteEnum.values) {
+                                var scraper = Scraper(
+                                    searchTerm: state.searchTerm,
+                                    site: site,
+                                    store: store);
+                                await scraper.getData();
+
+                                String fileName = DateFormat.yMd()
+                                    .add_jm()
+                                    .format(DateTime.now());
+                                store.dispatch(SetInfoMessageAction(
+                                    infoMessage: 'Generating csv file...'));
+                                var csvGenerator = CSVGenerator(
+                                  fileName: fileName,
+                                  results: scraper.searchResults,
+                                  site: site,
+                                );
+                                await csvGenerator.generate();
+
+                                store.dispatch(SetInfoMessageAction(
+                                    infoMessage:
+                                        'File(s) saved to Documents/Google Search Results/'));
+                              }
+                            }
+                            store.dispatch(
+                                SetSearchStateAction(isSearching: false));
+                            store.dispatch(
+                                SetInfoMessageAction(infoMessage: ''));
+                          },
                     child: fl.Text(
-                      state.errorMessage,
-                      style: TextStyle(color: fl.Colors.red),
+                      state.isSearching ? 'Searching...' : 'Search',
                     ),
                   ),
-          ],
+                ],
+              ),
+              const fl.SizedBox(),
+              state.infoMessage == ''
+                  ? const fl.SizedBox()
+                  : fl.Padding(
+                      padding: const fl.EdgeInsets.all(8.0),
+                      child: fl.Row(
+                        children: [
+                          const fl.SizedBox(
+                            width: 25,
+                            height: 25,
+                            child: fl.ProgressRing(),
+                          ),
+                          fl.Padding(
+                            padding: const fl.EdgeInsets.only(left: 5.0),
+                            child: fl.Text(state.infoMessage),
+                          ),
+                        ],
+                      ),
+                    ),
+              state.errorMessage == ''
+                  ? const fl.SizedBox()
+                  : fl.Padding(
+                      padding: const fl.EdgeInsets.all(8.0),
+                      child: fl.Text(
+                        state.errorMessage,
+                        style: fl.TextStyle(color: fl.Colors.red),
+                      ),
+                    ),
+            ],
+          ),
         );
       },
     );
