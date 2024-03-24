@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:intl/intl.dart';
 import 'package:search_results/models/search_result.dart';
 
 class CSVGenerator {
@@ -19,9 +20,9 @@ class CSVGenerator {
     for (var result in results) {
       // break when we get 50 results
       if (listIndex == 50) break;
-      // TODO: Format date
+
       file.writeAsStringSync(
-        '${result.searchTerm}, ${result.dateTime}, ${result.isSponsored ? "Yes" : "No"}, ${result.website}, ${result.destinationURL}, "${result.headlineText}", ${result.subText}\n',
+        '${result.searchTerm}, ${DateFormat.yMd().add_jm().format(result.dateTime)}, ${result.isSponsored ? "Yes" : "No"}, ${result.website}, ${result.destinationURL}, "${result.headlineText}", ${result.subText}\n',
         mode: FileMode.append,
       );
 
