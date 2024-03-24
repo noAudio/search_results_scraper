@@ -1,9 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:intl/intl.dart';
 import 'package:redux/redux.dart';
 import 'package:fluent_ui/fluent_ui.dart' as fl;
 import 'package:search_results/actions/index.dart';
 import 'package:search_results/enums/site_enum.dart';
+import 'package:search_results/logic/csv_generator.dart';
 import 'package:search_results/logic/scraper.dart';
 import 'package:search_results/models/app_state.dart';
 import 'package:search_results/reducers/app_reducer.dart';
@@ -81,11 +83,27 @@ class Home extends fl.StatelessWidget {
                                   site: site,
                                   store: store);
                               await scraper.getData();
-                              // TODO: Generate csv
+
+                              String fileName = DateFormat.yMd()
+                                  .add_jm()
+                                  .format(DateTime.now());
+                              store.dispatch(SetInfoMessageAction(
+                                  infoMessage: 'Generating csv file...'));
+                              var csvGenerator = CSVGenerator(
+                                fileName: fileName,
+                                results: scraper.searchResults,
+                                site: site,
+                              );
+                              await csvGenerator.generate();
+
+                              store.dispatch(SetInfoMessageAction(
+                                  infoMessage:
+                                      'File(s) saved to Documents/Google Search Results/'));
                             }
-                            store.dispatch(
-                                SetSearchStateAction(isSearching: false));
                           }
+                          store.dispatch(
+                              SetSearchStateAction(isSearching: false));
+                          store.dispatch(SetInfoMessageAction(infoMessage: ''));
                         },
                   child: fl.Text(
                     state.isSearching ? 'Searching...' : 'Search',
