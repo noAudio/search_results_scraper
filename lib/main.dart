@@ -83,7 +83,12 @@ class Home extends fl.StatelessWidget {
                                     searchTerm: state.searchTerm,
                                     site: site,
                                     store: store);
-                                await scraper.getData();
+                                try {
+                                  await scraper.getData();
+                                } catch (e) {
+                                  store.dispatch(SetErrorMessageAction(
+                                      errorMessage: e.toString()));
+                                }
 
                                 String fileName = DateFormat.yMd()
                                     .add_jm()
