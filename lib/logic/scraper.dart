@@ -119,7 +119,7 @@ class Scraper {
       var href = await linkElement.property('href');
       String fullURL = href.toString().split('JSHandle:')[1];
       String headlineText = await getTextContent(organicResult, '.DKV0Md');
-      String subText = await getTextContent(organicResult, '.Hdw6tb>span');
+      String subText = await getTextContent(organicResult, '.Hdw6tb');
       searchResults.add(
         SearchResult(
           searchTerm: searchTerm,
