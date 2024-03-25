@@ -28,7 +28,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
 
   FlutterWindow window(project);
   Win32Window::Point origin(10, 10);
-  Win32Window::Size size(450, 200);
+  Win32Window::Size size(450, 250);
   if (!window.Create(L"Search Results", origin, size))
   {
     return EXIT_FAILURE;
