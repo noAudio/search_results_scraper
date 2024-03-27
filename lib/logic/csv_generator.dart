@@ -33,7 +33,7 @@ class CSVGenerator {
         '$path/${results[0].searchTerm} - ${fileName.replaceAll('/', '-').replaceAll(':', '.')} - ${site == SiteEnum.baseWebsite ? "Google" : "Google UK"}.csv';
     var file = File(csvName);
     file.writeAsStringSync(
-        'Keyword, Date, Sponsored, Website Name, URL, Headline Text, Sub-text\n');
+        'Keyword, Date, Sponsored, Website Name, URL, Headline Text\n');
 
     int listIndex = 0;
 
@@ -42,7 +42,7 @@ class CSVGenerator {
       if (listIndex == 50) break;
 
       file.writeAsStringSync(
-        '${result.searchTerm}, ${DateFormat.yMd().add_jm().format(result.dateTime)}, ${result.isSponsored ? "Yes" : "No"}, ${result.website}, ${result.destinationURL}, "${result.headlineText}", "${result.subText}"\n',
+        '${result.searchTerm}, ${DateFormat.yMd().add_jm().format(result.dateTime)}, ${result.isSponsored ? "Yes" : "No"}, ${result.website}, ${result.destinationURL}, "${result.headlineText}"\n',
         mode: FileMode.append,
       );
 
