@@ -28,7 +28,6 @@ class CSVGenerator {
   }
 
   Future<void> generate() async {
-    // TODO: Save to Documents directory
     String path = await createSaveFolder();
     String csvName =
         '$path/${results[0].searchTerm} - ${fileName.replaceAll('/', '-').replaceAll(':', '.')} - ${site == SiteEnum.baseWebsite ? "Google" : "Google UK"}.csv';
