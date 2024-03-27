@@ -100,6 +100,12 @@ class Scraper {
       String fullURL = href.toString().split('JSHandle:')[1];
       String headlineText = await getTextContent(adResult, '.EE3Upf>span');
       String subText = await getTextContent(adResult, '.lVm3ye>div');
+
+      // Check if date is present then remove
+      if (subText.contains('— ')) {
+        subText = subText.split('— ')[1];
+      }
+
       searchResults.add(
         SearchResult(
           searchTerm: searchTerm,
@@ -120,6 +126,12 @@ class Scraper {
       String fullURL = href.toString().split('JSHandle:')[1];
       String headlineText = await getTextContent(organicResult, '.DKV0Md');
       String subText = await getTextContent(organicResult, '.Hdw6tb');
+
+      // Check if date is present then remove
+      if (subText.contains('— ')) {
+        subText = subText.split('— ')[1];
+      }
+
       searchResults.add(
         SearchResult(
           searchTerm: searchTerm,
