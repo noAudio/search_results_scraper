@@ -8,11 +8,13 @@ import 'package:search_results/models/search_result.dart';
 
 class CSVGenerator {
   final String fileName;
+  final String keyWord;
   final List<SearchResult> results;
   final SiteEnum site;
 
   CSVGenerator({
     required this.fileName,
+    required this.keyWord,
     required this.results,
     required this.site,
   });
@@ -30,7 +32,7 @@ class CSVGenerator {
   Future<void> generate() async {
     String path = await createSaveFolder();
     String csvName =
-        '$path/${results[0].searchTerm} - ${fileName.replaceAll('/', '-').replaceAll(':', '.')} - ${site == SiteEnum.baseWebsite ? "Google" : "Google UK"}.csv';
+        '$path/$keyWord - ${fileName.replaceAll('/', '-').replaceAll(':', '.')} - ${site == SiteEnum.baseWebsite ? "Google" : "Google UK"}.csv';
     var file = File(csvName);
     file.writeAsStringSync(
         'Keyword, Date, Sponsored, Website Name, URL, Headline Text\n');

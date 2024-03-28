@@ -97,6 +97,7 @@ class Home extends fl.StatelessWidget {
                                     infoMessage: 'Generating csv file...'));
                                 var csvGenerator = CSVGenerator(
                                   fileName: fileName,
+                                  keyWord: state.searchTerm,
                                   results: scraper.searchResults,
                                   site: site,
                                 );
