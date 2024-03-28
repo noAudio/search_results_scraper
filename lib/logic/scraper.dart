@@ -170,7 +170,7 @@ class Scraper {
         if (btn != null) {
           await _page.evaluate(
               '''() => { window.scrollTo(0, document.body.scrollHeight); }''');
-          await btn.click();
+          await btn.evaluate('''(b) => b.click()''');
         }
       }
       totalResults = await checkResults();
