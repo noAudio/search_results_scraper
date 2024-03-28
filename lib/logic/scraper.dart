@@ -63,7 +63,7 @@ class Scraper {
     try {
       String chromePath = await browserPath();
       _browser = await puppeteer.launch(
-          headless: false,
+          headless: true,
           args: ['--start-maximized'],
           executablePath: chromePath);
       _page = await _browser.newPage();
