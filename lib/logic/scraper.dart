@@ -125,11 +125,15 @@ class Scraper {
       var href = await linkElement.property('href');
       String fullURL = href.toString().split('JSHandle:')[1];
       String headlineText = await getTextContent(organicResult, '.DKV0Md');
-      String subText = await getTextContent(organicResult, '.Hdw6tb');
-
-      // Check if date is present then remove
-      if (subText.contains('— ')) {
-        subText = subText.split('— ')[1];
+      String subText = '';
+      try {
+        subText = await getTextContent(organicResult, '.Hdw6tb');
+        // Check if date is present then remove
+        if (subText.contains('— ')) {
+          subText = subText.split('— ')[1];
+        }
+      } catch (e) {
+        //
       }
 
       searchResults.add(
