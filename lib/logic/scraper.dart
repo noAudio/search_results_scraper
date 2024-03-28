@@ -63,7 +63,7 @@ class Scraper {
     try {
       String chromePath = await browserPath();
       _browser = await puppeteer.launch(
-          headless: true,
+          headless: false,
           args: ['--start-maximized'],
           executablePath: chromePath);
       _page = await _browser.newPage();
@@ -159,10 +159,22 @@ class Scraper {
     await infoPopup[0].click();
     // Check if there are 50 or more results on the page
     int totalResults = await checkResults();
+    int loops = 0;
     while (totalResults < 50) {
       await _page.evaluate(
           '''() => { window.scrollTo(0, document.body.scrollHeight); }''');
+      // If we're stuck in the loop for a while
+      // look for the 'More results' button.
+      if (loops > 500) {
+        var btn = await _page.$OrNull('.ipz2Oe');
+        if (btn != null) {
+          await _page.evaluate(
+              '''() => { window.scrollTo(0, document.body.scrollHeight); }''');
+          await btn.click();
+        }
+      }
       totalResults = await checkResults();
+      loops++;
     }
     var organicResults = await _page.$$(_organicSelector);
     var adResults = await _page.$$(_adSelector);
