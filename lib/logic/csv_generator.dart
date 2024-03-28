@@ -44,7 +44,7 @@ class CSVGenerator {
       if (listIndex == 50) break;
 
       file.writeAsStringSync(
-        '${result.searchTerm}, ${DateFormat.yMd().add_jm().format(result.dateTime)}, ${result.isSponsored ? "Yes" : "No"}, ${result.website}, ${result.destinationURL}, "${result.headlineText}"\n',
+        '${result.searchTerm}, ${DateFormat.yMd().add_jm().format(result.dateTime)}, ${result.isSponsored ? "Yes" : "No"}, "${result.website}", ${result.destinationURL}, "${result.headlineText.replaceAll('"', '\'')}"\n',
         mode: FileMode.append,
       );
 
