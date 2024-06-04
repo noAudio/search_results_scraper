@@ -120,7 +120,8 @@ class Scraper {
     }
 
     for (var organicResult in organicResults) {
-      String websiteName = await getTextContent(organicResult, '.CA5RN>span');
+      String websiteName =
+          await getTextContent(organicResult, '.CA5RN>div>span');
       var linkElement = await organicResult.$('.yuRUbf>div>span>a');
       var href = await linkElement.property('href');
       String fullURL = href.toString().split('JSHandle:')[1];
@@ -160,7 +161,7 @@ class Scraper {
     }
     // click pop up
     var infoPopup = await _page.$$('.sy4vM');
-    await infoPopup[0].click();
+    if (infoPopup.isNotEmpty) await infoPopup[0].click();
     // Check if there are 50 or more results on the page
     int totalResults = await checkResults();
     int loops = 0;
